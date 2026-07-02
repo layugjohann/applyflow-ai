@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="mb-8 mt-5">
+    <h2 class="fw-bold mb-1">Add New Job</h2>
+    <p class="text-soft mb-0">
+        Track a new application in your pipeline
+    </p>
+</div>
+
+<div class="card border-0 add-job-card mx-auto">
+    <div class="card-body p-4">
+
+        <div class="mb-4">
+            <h3 class="fw-semibold mb-1">Job Application Details</h3>
+            <p class="text-soft small mb-0">
+                Add the job details below. ApplyFlow will use your active resume for AI matching.
+            </p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+<div class="row">
+
+    <!-- Company -->
+    <div class="col-12 mb-4">
+        <label class="form-label text-soft mb-2">
+            Company
+        </label>
+
+        {{ form.company_name }}
+    </div>
+
+    <!-- Position -->
+    <div class="col-12 mb-4">
+        <label class="form-label text-soft mb-2">
+            Position
+        </label>
+
+        {{ form.position }}
+    </div>
+
+    <!-- Status -->
+    <div class="col-12 mb-4">
+        <label class="form-label text-soft mb-2">
+            Status
+        </label>
+
+        {{ form.status }}
+    </div>
+
+    <!-- Salary -->
+    <div class="col-12 mb-4">
+        <label class="form-label text-soft mb-2">
+            Salary
+            <small class="text-soft">(Optional)</small>
+        </label>
+
+        {{ form.salary }}
+    </div>
+
+    <!-- Job Link -->
+    <div class="col-12 mb-4">
+        <label class="form-label text-soft mb-2">
+            Job Posting URL
+        </label>
+
+        {{ form.job_link }}
+
+        <small class="text-soft d-block mt-2">
+            Paste the job posting URL. ApplyFlow will analyze this posting using your active resume.
+        </small>
+    </div>
+
+    <!-- Notes -->
+    <div class="col-12">
+        <label class="form-label text-soft mb-2">
+            Notes
+        </label>
+
+        {{ form.notes }}
+
+        <small class="text-soft d-block mt-2">
+            Optional notes about the role, recruiter, interview schedule, or anything you want to remember.
+        </small>
+    </div>
+
+</div>
+
+            <div class="resume-info-card mt-4">
+                <div class="d-flex align-items-start gap-3">
+                    <div class="resume-info-icon">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+
+                    <div>
+                        <h6 class="fw-semibold mb-1">AI Resume Match</h6>
+                        <p class="text-soft small mb-0">
+                            ApplyFlow will use your active resume from the Resume page for AI matching.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <a href="{% url 'job_list' %}" class="btn btn-outline-light">
+                    Cancel
+                </a>
+
+                <button type="submit" class="btn btn-success px-4">
+                    <i class="bi bi-check2-circle me-2"></i>
+                    Save Job
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

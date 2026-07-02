@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <!-- HERO / HEADER CARD -->
+    <div class="card border-0 mb-4">
+        <div class="card-body p-4">
+
+            <h2 class="fw-bold mb-1">
+                {{ job.company_name }}
+            </h2>
+
+            <p class="text-soft mb-2">
+                {{ job.position }}
+            </p>
+
+            <span class="status-badge status-{{ job.status|lower }}">
+                {{ job.status }}
+            </span>
+
+        </div>
+    </div>
+
+    <!-- DETAILS GRID -->
+    <div class="row g-4">
+
+        <!-- LEFT: MAIN INFO -->
+        <div class="col-lg-8">
+
+            <div class="card border-0 h-100">
+                <div class="card-body p-4">
+
+                    <h5 class="mb-3 fw-semibold">Details</h5>
+
+                    <div class="mb-3">
+                        <div class="text-soft small">Salary</div>
+                        <div class="fw-semibold">
+                            {% if job.salary %}
+                                ₱{{ job.salary }}
+                            {% else %}
+                                <span class="text-muted">Not specified</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="text-soft small">Job Link</div>
+                        <div>
+                            {% if job.job_link %}
+                                <a href="{{ job.job_link }}" target="_blank" class="job-link">
+                                    View Posting
+                                </a>
+                            {% else %}
+                                <span class="text-muted">No link provided</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="text-soft small">Notes</div>
+                        <div class="text-light">
+                            {% if job.notes %}
+                                {{ job.notes }}
+                            {% else %}
+                                <span class="text-muted">No notes added</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT: META CARD -->
+        <div class="col-lg-4">
+
+            <div class="card border-0">
+                <div class="card-body p-4">
+
+                    <h5 class="mb-3 fw-semibold">Timeline</h5>
+
+                    <div class="text-soft small mb-1">Date Applied</div>
+                    <div class="fw-semibold">
+                        {{ job.date_applied|date:"M d, Y" }}
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="mt-4 d-flex flex-wrap gap-2">
+
+    <a href="{% url 'job_list' %}" class="btn btn-outline-light">
+        <i class="bi bi-arrow-left me-2"></i>
+        Back to Jobs
+    </a>
+
+    <a href="{% url 'edit_job' job.id %}" class="btn btn-success">
+        <i class="bi bi-pencil-square me-2"></i>
+        Edit Job
+    </a>
+
+    <a href="{% url 'delete_job' job.id %}" class="btn btn-outline-danger">
+        <i class="bi bi-trash me-2"></i>
+        Delete
+    </a>
+
+</div>
+
+<!-- ================= AI MATCH RESULT ================= -->
+<!-- ================= AI MATCH RESULT ================= -->
+<div class="card border-0 mt-4 ai-result-card">
+    <div class="card-body p-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h5 class="fw-bold mb-1">
+                    <i class="bi bi-stars me-2 text-success"></i>
+                    AI Match Result
+                </h5>
+                <p class="text-soft small mb-0">
+                    Saved resume analysis for this job
+                </p>
+            </div>
+
+            <span class="ai-score-pill">
+                {{ job.match_score|default:"0" }}%
+            </span>
+        </div>
+
+        <div class="row g-3">
+
+            <div class="col-lg-6">
+                <div class="ai-detail-card strengths-card h-100">
+                    <h6 class="fw-semibold mb-3">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        Strengths
+                    </h6>
+
+                    <ul class="ai-detail-list">
+                        {% if job.strengths %}
+                            {% for item in job.strengths.splitlines %}
+                                <li>{{ item }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li>No strengths detected</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="ai-detail-card missing-card h-100">
+                    <h6 class="fw-semibold mb-3">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Missing Skills
+                    </h6>
+
+                    <ul class="ai-detail-list">
+                        {% if job.missing_skills %}
+                            {% for item in job.missing_skills.splitlines %}
+                                <li>{{ item }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li>No missing skills detected</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="ai-detail-card recommendation-card">
+                    <h6 class="fw-semibold mb-3">
+                        <i class="bi bi-lightbulb-fill me-2"></i>
+                        Recommendation
+                    </h6>
+
+                    <p class="mb-0">
+                        {{ job.recommendation|default:"No recommendation yet" }}
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock %}

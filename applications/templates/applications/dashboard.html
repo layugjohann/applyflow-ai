@@ -1,0 +1,459 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- HERO SECTION -->
+<div class="row mb-4">
+    <div class="col-xl-8 col-lg-10">
+
+        <div class="hero-card p-5 rounded-4 shadow-sm">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+                    <h2 class="mb-1 fw-bold text-white">👋 Welcome back!</h2>
+                    <p class="mb-0 opacity-75">
+                        Track your job applications and pipeline progress in real time
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="mb-4">
+    <h2 class="fw-bold">Dashboard</h2>
+    <p class="text-muted">Overview of your job application activity</p>
+</div>
+
+<!-- KPI CARDS (FIXED GRID - IMPORTANT FIX) -->
+<div class="row row-cols-1 row-cols-md-3 row-cols-xl-6 g-4 mb-4">
+
+    <!-- TOTAL -->
+    <div class="col">
+        <div class="card border-0 h-100">
+            <div class="card border-0 h-100 dashboard-card animate-card">
+                <div>
+                    <small class="text-muted text-uppercase">Total</small>
+                    <h2 class="fw-bold mb-0">{{ total_jobs }}</h2>
+                </div>
+            <div class="kpi-icon kpi-icon-total">
+                <i class="bi bi-briefcase"></i>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- APPLIED -->
+    <div class="col">
+        <div class="card border-0 h-100">
+            <div class="card border-0 h-100 dashboard-card animate-card">
+                <div>
+                    <small class="text-muted text-uppercase">Applied</small>
+                    <h2 class="fw-bold mb-0">{{ applied_count }}</h2>
+                </div>
+                <div class="kpi-icon kpi-icon-primary">
+                    <i class="bi bi-send"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- INTERVIEW -->
+    <div class="col">
+        <div class="card border-0 h-100">
+            <div class="card border-0 h-100 dashboard-card animate-card">
+                <div>
+                    <small class="text-muted text-uppercase">Interview</small>
+                    <h2 class="fw-bold mb-0">{{ interview_count }}</h2>
+                </div>
+                <div class="kpi-icon kpi-icon-warning">
+                    <i class="bi bi-person-video3"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ASSESSMENT -->
+    <div class="col">
+        <div class="card border-0 h-100">
+            <div class="card border-0 h-100 dashboard-card animate-card">
+                <div>
+                    <small class="text-muted text-uppercase">Assessment</small>
+                    <h2 class="fw-bold mb-0">{{ assessment_count }}</h2>
+                </div>
+                <div class="kpi-icon kpi-icon-purple">
+                    <i class="bi bi-clipboard-check"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- OFFER -->
+    <div class="col">
+        <div class="card border-0 h-100">
+            <div class="card border-0 h-100 dashboard-card animate-card">
+                <div>
+                    <small class="text-muted text-uppercase">Offer</small>
+                    <h2 class="fw-bold mb-0">{{ offer_count }}</h2>
+                </div>
+                <div class="kpi-icon kpi-icon-success">
+                    <i class="bi bi-trophy"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REJECTED -->
+    <div class="col">
+        <div class="card border-0 h-100">
+            <div class="card border-0 h-100 dashboard-card animate-card">
+                <div>
+                    <small class="text-muted text-uppercase">Rejected</small>
+                    <h2 class="fw-bold mb-0">{{ rejected_count }}</h2>
+                </div>
+                <div class="kpi-icon kpi-icon-danger">
+                    <i class="bi bi-x-circle"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- CHARTS -->
+<!-- MAIN GRID -->
+<div class="row g-4">
+
+    <!-- LEFT: PIE CHART ONLY -->
+    <div class="col-xl-6">
+        <div class="card border-0 h-100 dashboard-card animate-card">
+            <div class="card-body">
+                <div class="section-title">
+                    Application Breakdown
+                </div>
+                <canvas id="statusChart" class="chart-animate"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT: STACKED METRICS -->
+    <div class="col-xl-6">
+
+        <!-- SUCCESS RATE -->
+        <div class="card card-lg mb-4">
+            <div class="card border-0 h-100 dashboard-card animate-card">
+                <div class="section-title">
+                    Sucess Rate
+                </div>
+                <h1 class="fw-bold text-success">{{ success_rate }}%</h1>
+            </div>
+        </div>
+
+        <div class="col mb-4">
+
+    <div class="card card-lg border-0 h-100">
+
+        <div class="card-body">
+
+            <div class="card border-0 h-100 dashboard-card animate-card">
+                <div class="section-title mb-2">
+                    Monthly Goal
+                </div>
+
+                <span class="badge bg-primary mb-2">
+                    {{ current_month_apps }}/{{ monthly_goal }}
+                </span>
+            </div>
+
+            <h3 class="fw-bold mb-2">
+                {{ goal_progress }}%
+            </h3>
+
+            <div class="progress" style="height: 8px;">
+                <div class="progress-bar bg-success animated-progress"
+                     data-progress="{{ goal_progress }}"
+                     style="width: 0%;">
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+        <!-- MONTHLY CHART (MOVED HERE) -->
+        <div class="card card-lg border-0">
+            <div class="card-body">
+                <div class="card border-0 h-100 dashboard-card animate-card">
+                    <div class="section-title">
+                        Applications per Month
+                    </div>
+                </div>
+                <canvas id="monthlyChart" class="chart-animate"></canvas>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- RECENT APPLICATIONS -->
+<div class="card card-lg mt-4">
+    <div class="card border-0 h-100 dashboard-card animate-card">
+
+        <div class="section-title mb-2">
+            Recent Applications
+        </div>
+
+        {% if recent_jobs %}
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Position</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for job in recent_jobs %}
+                    <tr>
+
+                        <td>
+                            <a href="{% url 'job_detail' job.id %}"
+                               class="job-link fw-semibold">
+                                {{ job.company_name }}
+                            </a>
+                        </td>
+
+                        <td>{{ job.position }}</td>
+
+                        <td>
+
+                            {% if job.status == 'Applied' %}
+                                <span class="badge status-applied">
+                                    {{ job.status }}
+                                </span>
+
+                            {% elif job.status == 'Interview' %}
+                                <span class="badge status-interview">
+                                    {{ job.status }}
+                                </span>
+
+                            {% elif job.status == 'Assessment' %}
+                                <span class="badge status-assessment">
+                                    {{ job.status }}
+                                </span>
+
+                            {% elif job.status == 'Offer' %}
+                                <span class="badge status-offer">
+                                    {{ job.status }}
+                                </span>
+
+                            {% elif job.status == 'Rejected' %}
+                                <span class="badge status-rejected">
+                                    {{ job.status }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+            <p class="text-muted">No applications yet.</p>
+        {% endif %}
+
+    </div>
+</div>
+<!-- CHART SCRIPT -->
+<script>
+new Chart(document.getElementById('statusChart'), {
+    type: 'doughnut',
+
+    data: {
+        labels: [
+            'Applied',
+            'Interview',
+            'Assessment',
+            'Offer',
+            'Rejected'
+        ],
+
+        datasets: [{
+            data: [
+                {{ applied_count }},
+                {{ interview_count }},
+                {{ assessment_count }},
+                {{ offer_count }},
+                {{ rejected_count }}
+            ],
+
+            backgroundColor: [
+                '#3b82f6',
+                '#f59e0b',
+                '#8b5cf6',
+                '#10b981',
+                '#ef4444'
+            ],
+
+            borderWidth: 0,
+            hoverBorderWidth: 0
+        }]
+    },
+
+    options: {
+        cutout: '70%',
+
+        plugins: {
+            legend: {
+                position: 'bottom',
+
+                labels: {
+                    color: '#cbd5e1',
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    padding: 20
+                }
+            },
+
+            tooltip: {
+                backgroundColor: '#111827',
+                titleColor: '#ffffff',
+                bodyColor: '#e5e7eb',
+                borderColor: 'rgba(255,255,255,0.08)',
+                borderWidth: 1
+            }
+        }
+    }
+});
+
+new Chart(document.getElementById('monthlyChart'), {
+    type: 'line',
+
+    data: {
+        labels: {{ month_labels|safe }},
+        datasets: [{
+            label: 'Applications',
+            data: {{ month_counts|safe }},
+
+            tension: 0.45,
+            fill: true,
+
+            borderColor: '#22c55e',
+            backgroundColor: 'rgba(34,197,94,.18)',
+
+            borderWidth: 3,
+
+            pointRadius: 4,
+            pointHoverRadius: 7,
+            pointBackgroundColor: '#22c55e',
+            pointBorderColor: '#22c55e',
+            pointHoverBackgroundColor: '#22c55e'
+        }]
+    },
+
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+
+        animation: {
+            x: {
+                type: 'number',
+                easing: 'easeOutQuart',
+                duration: 1800,
+                from: NaN
+            },
+
+            y: {
+                type: 'number',
+                easing: 'easeOutQuart',
+                duration: 1800
+            },
+
+            radius: {
+                duration: 400,
+                delay: 1400
+            }
+        },
+
+        plugins: {
+            legend: {
+                display: false
+            },
+
+            tooltip: {
+                backgroundColor: '#111827',
+                titleColor: '#ffffff',
+                bodyColor: '#e5e7eb',
+                borderColor: 'rgba(34,197,94,.35)',
+                borderWidth: 1,
+                displayColors: false
+            }
+        },
+
+        interaction: {
+            mode: 'index',
+            intersect: false
+        },
+
+        scales: {
+            x: {
+                ticks: {
+                    color: '#cbd5e1'
+                },
+
+                grid: {
+                    color: 'rgba(255,255,255,0.05)'
+                }
+            },
+
+            y: {
+                beginAtZero: true,
+
+                ticks: {
+                    precision: 0,
+                    color: '#cbd5e1'
+                },
+
+                grid: {
+                    color: 'rgba(255,255,255,0.05)'
+                }
+            }
+        }
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const progressBars = document.querySelectorAll(".animated-progress");
+
+    progressBars.forEach(bar => {
+        const target = bar.dataset.progress || 0;
+
+        setTimeout(() => {
+            bar.style.transition = "width 900ms ease";
+            bar.style.width = target + "%";
+        }, 250);
+    });
+});
+
+</script>
+
+{% endblock %}

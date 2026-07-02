@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
+
+    <div class="auth-wrapper w-100" style="max-width: 420px;">
+
+        <!-- APPLYFLOW BRAND -->
+        <div class="d-flex align-items-center justify-content-center gap-2 mb-4 mt-3">
+
+            <!-- LOGO -->
+            <svg class="brand-logo-register" viewBox="0 0 24 24" fill="none">
+
+                <circle cx="6.5" cy="14" r="2" fill="var(--app-success)"/>
+                <circle cx="12" cy="10" r="2" fill="var(--app-success)"/>
+                <circle cx="18" cy="6.5" r="2" fill="var(--app-success)"/>
+
+                <path d="M6.5 14L12 10L18 6.5"
+                      stroke="var(--app-success)"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"/>
+
+            </svg>
+
+            <!-- BRAND NAME -->
+            <div class="fw-bold brand-text brand-success">
+                ApplyFlow
+            </div>
+
+        </div>
+
+        <!-- FORM CARD STARTS HERE -->
+
+        <!-- HEADER -->
+        <div class="auth-header text-center mb-5">
+
+            <h2 class="fw-bold mb-1">
+                Create Account
+            </h2>
+
+            <p class="text-soft mb-0">
+                Start tracking your job applications smarter.
+            </p>
+
+        </div>
+
+        <!-- FORM CARD -->
+        <div class="card border-0">
+
+            <div class="card-body p-4 p-lg-5">
+
+                {% if form.errors %}
+                <div class="alert alert-danger border-0">
+                    Please correct the errors below.
+                </div>
+                {% endif %}
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label text-soft">Username</label>
+                        {{ form.username }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-soft">Password</label>
+                        {{ form.password1 }}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-soft">Confirm Password</label>
+                        {{ form.password2 }}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+
+                        <i class="bi bi-person-plus me-2"></i>
+                        Create Account
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="text-center mt-4">
+
+            <span class="text-muted">
+                Already have an account?
+            </span>
+
+            <a href="{% url 'login' %}" class="text-decoration-none ms-1">
+                Sign In
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

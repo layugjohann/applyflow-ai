@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="mb-5 mt-5">
+        <h2 class="fw-bold mb-1">
+            Resume Management
+        </h2>
+
+        <p class="text-soft mb-0">
+            Manage the active resume used for AI job matching.
+        </p>
+    </div>
+
+    <!-- UPLOAD SECTION -->
+    <div class="card border-0 resume-upload-card mb-4">
+        <div class="card-body p-4">
+
+            <div class="d-flex align-items-start gap-3 mb-4">
+                <div class="resume-upload-icon">
+                    <i class="bi bi-cloud-arrow-up"></i>
+                </div>
+
+                <div>
+                    <h5 class="fw-bold mb-1">Upload New Resume</h5>
+                    <p class="text-soft small mb-0">
+                        Upload a PDF resume. The newest upload will automatically become your active resume.
+                    </p>
+                </div>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <input type="hidden" name="upload_resume" value="1">
+
+                <input
+                    type="file"
+                    name="resume_file"
+                    class="form-control mb-3"
+                    accept=".pdf">
+
+                <button class="btn btn-success">
+                    <i class="bi bi-upload me-2"></i>
+                    Upload Resume
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- RESUME LIST HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-semibold mb-0">
+            Uploaded Resumes
+        </h5>
+
+        {% if resumes %}
+            <span class="badge bg-success">
+                {{ resumes|length }} total
+            </span>
+        {% endif %}
+    </div>
+
+    {% if resumes %}
+
+        <div class="row g-3">
+
+            {% for resume in resumes %}
+
+            <div class="col-12">
+
+                <div class="card border-0 resume-card {% if resume.is_active %}active-resume-card{% endif %}">
+
+                    <div class="card-body p-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
+
+                        <!-- LEFT SIDE -->
+                        <div class="d-flex align-items-start gap-3">
+
+                            <div class="resume-file-icon">
+                                <i class="bi bi-file-earmark-text"></i>
+                            </div>
+
+                            <div>
+                                <div class="fw-semibold mb-1">
+                                    {{ resume.file.name }}
+                                </div>
+
+                                <small class="text-soft d-block mb-2">
+                                    Uploaded {{ resume.uploaded_at|date:"M d, Y - H:i" }}
+                                </small>
+
+                                {% if resume.is_active %}
+                                    <span class="badge active-resume-badge">
+                                        <i class="bi bi-check-circle me-1"></i>
+                                        Active Resume
+                                    </span>
+                                {% else %}
+                                    <span class="badge old-resume-badge">
+                                        Old Resume
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                        </div>
+
+                        <!-- RIGHT SIDE ACTIONS -->
+                        <div class="d-flex flex-wrap gap-2">
+
+                            {% if not resume.is_active %}
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="resume_id" value="{{ resume.id }}">
+
+                                    <button name="set_active" class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-check2-circle me-1"></i>
+                                        Use
+                                    </button>
+                                </form>
+                            {% endif %}
+
+                            <a href="{{ resume.file.url }}" target="_blank"
+                               class="btn btn-sm btn-outline-light">
+                                <i class="bi bi-eye me-1"></i>
+                                View
+                            </a>
+
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-outline-danger"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteModal{{ resume.id }}">
+                                <i class="bi bi-trash me-1"></i>
+                                Delete
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- DELETE MODAL -->
+            <div class="modal fade" id="deleteModal{{ resume.id }}" tabindex="-1">
+
+                <div class="modal-dialog modal-dialog-centered">
+
+                    <div class="modal-content delete-modal border-0 shadow">
+
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title fw-bold">
+                                Delete Resume
+                            </h5>
+
+                            <button type="button"
+                                    class="btn-close btn-close-white"
+                                    data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+
+                            <p class="text-soft mb-2">
+                                Are you sure you want to delete this resume?
+                            </p>
+
+                            <div class="delete-file-name">
+                                {{ resume.file.name }}
+                            </div>
+
+                            <small class="text-danger d-block mt-3">
+                                This action cannot be undone.
+                            </small>
+
+                        </div>
+
+                        <div class="modal-footer border-0">
+
+                            <button type="button"
+                                    class="btn btn-outline-light"
+                                    data-bs-dismiss="modal">
+                                Cancel
+                            </button>
+
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="resume_id" value="{{ resume.id }}">
+
+                                <button name="delete_resume" class="btn btn-danger">
+                                    Yes, Delete
+                                </button>
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-resume-state">
+            <i class="bi bi-file-earmark-text"></i>
+            <h5>No resumes uploaded yet</h5>
+            <p class="text-soft mb-0">
+                Upload your first resume above to start using AI job matching.
+            </p>
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

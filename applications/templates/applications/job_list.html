@@ -1,0 +1,515 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<div class="mb-8 mt-5">
+
+    <h2 class="fw-bold mb-1">
+        Add New Job
+    </h2>
+
+    <p class="text-soft mb-3">
+        Track a new application in your pipeline
+    </p>
+
+    <a href="{% url 'add_job' %}" class="btn btn-success">
+        <i class="bi bi-plus-lg me-2"></i>
+        Add Job
+    </a>
+
+</div>
+
+<!-- ================= DRAWER (FIXED: ONLY ONE) ================= -->
+<div class="offcanvas offcanvas-end applyflow-drawer"
+     tabindex="-1"
+     id="jobDrawer">
+
+    <div class="offcanvas-header applyflow-drawer-header">
+        <div>
+            <h5 class="offcanvas-title fw-bold mb-1">
+                <i class="bi bi-stars me-2 text-success"></i>
+                AI Job Analysis
+            </h5>
+            <small class="text-soft">Resume match insights</small>
+        </div>
+
+        <button type="button"
+                class="btn-close btn-close-white"
+                data-bs-dismiss="offcanvas"></button>
+    </div>
+
+    <div class="offcanvas-body p-4">
+
+        <!-- JOB HEADER -->
+        <div class="drawer-job-header mb-4">
+            <div class="drawer-icon">
+                <i class="bi bi-briefcase"></i>
+            </div>
+
+            <div>
+                <h4 id="drawerCompany" class="fw-bold mb-1"></h4>
+                <p id="drawerPosition" class="text-soft mb-2"></p>
+                <span id="drawerStatus" class="status-badge drawer-status"></span>
+            </div>
+        </div>
+
+        <!-- LOADING -->
+        <div id="aiLoadingState" class="text-center py-5 d-none">
+            <div class="ai-thinking mb-3">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+
+            <h6 class="fw-semibold">Analyzing Job Match...</h6>
+            <p class="text-soft small mb-0">
+                Comparing your resume with this job posting.
+            </p>
+        </div>
+
+        <!-- RESULTS -->
+        <div id="aiResultSection">
+
+            <!-- AI SCORE -->
+            <div class="drawer-section">
+                <h6 class="drawer-section-title">AI Match Score</h6>
+
+                <div class="d-flex align-items-center gap-4">
+                    <div class="score-circle">
+                        <span id="drawerScore">--</span><small>%</small>
+                    </div>
+
+                    <div class="flex-grow-1">
+                        <h5 id="drawerScoreLabel" class="fw-bold mb-1">--</h5>
+                        <p class="text-soft small mb-3">
+                            AI-generated resume fit score.
+                        </p>
+
+                        <div class="progress drawer-progress mb-4">
+                            <div id="drawerScoreBar"
+                                 class="progress-bar bg-success"
+                                 style="width: 0%;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STRENGTHS -->
+        <div class="drawer-card strengths-card">
+            <div class="drawer-card-header">
+                <i class="bi bi-check-circle-fill"></i>
+                <h6 class="drawer-section-title mb-0">Strengths</h6>
+            </div>
+
+            <ul id="drawerStrengths" class="drawer-list success-list"></ul>
+        </div>
+
+        <!-- MISSING -->
+        <div class="drawer-card missing-card">
+            <div class="drawer-card-header">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <h6 class="drawer-section-title mb-0">Missing Skills</h6>
+            </div>
+
+            <ul id="drawerMissing" class="drawer-list warning-list"></ul>
+        </div>
+
+        <!-- RECOMMENDATION -->
+        <div class="drawer-card recommendation-card">
+            <div class="drawer-card-header">
+                <i class="bi bi-lightbulb-fill"></i>
+                <h6 class="drawer-section-title mb-0">Recommendation</h6>
+            </div>
+
+            <p id="drawerRecommendation" class="mb-0"></p>
+        </div>
+
+        </div>
+
+    </div>
+</div>
+        
+
+
+<!-- ================= JOB LIST ================= -->
+{% if jobs %}
+
+<div class="card border-0">
+    <div class="card-body">
+
+        <!-- HEADER -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-semibold mb-0">
+                Applications
+            </h5>
+        </div>
+
+        <!-- FILTERS -->
+        <form method="GET" class="row g-2 mb-4 align-items-center">
+
+            <div class="col-md-7">
+                <input type="text"
+                       name="search"
+                       placeholder="Search company or position..."
+                       value="{{ search_query }}"
+                       class="form-control form-control-sm">
+            </div>
+
+            <div class="col-md-3">
+                <select name="status"
+                        class="form-select form-select-sm">
+
+                    <option value="">All Status</option>
+                    <option value="Applied" {% if status_filter == "Applied" %}selected{% endif %}>Applied</option>
+                    <option value="Interview" {% if status_filter == "Interview" %}selected{% endif %}>Interview</option>
+                    <option value="Assessment" {% if status_filter == "Assessment" %}selected{% endif %}>Assessment</option>
+                    <option value="Offer" {% if status_filter == "Offer" %}selected{% endif %}>Offer</option>
+                    <option value="Rejected" {% if status_filter == "Rejected" %}selected{% endif %}>Rejected</option>
+
+                </select>
+            </div>
+
+        </form>
+
+        <!-- TABLE -->
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle" id="jobTable">
+
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Position</th>
+                        <th>Status</th>
+                        <th>Date Applied</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for job in jobs %}
+                    <tr>
+
+                        <!-- CLICK OPENS DRAWER -->
+                        <td>
+                           <button type="button"
+                                class="btn btn-link p-0 fw-semibold text-start"
+                                onclick="openJobDrawer(
+                                    '{{ job.id }}',
+                                    '{{ job.company_name }}',
+                                    '{{ job.position }}',
+                                    '{{ job.status }}'
+                                )">
+                            {{ job.company_name }}
+                        </button>
+                        </td>
+
+                        <td>{{ job.position }}</td>
+
+                        <td>
+                            <span class="status-badge status-{{ job.status|lower }}">
+                                {{ job.status }}
+                            </span>
+                        </td>
+
+                        <td>{{ job.date_applied|date:"M d, Y" }}</td>
+
+                        <td class="text-end">
+
+                            <a href="{% url 'edit_job' job.id %}"
+                               class="btn btn-sm btn-outline-warning">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+
+                            <a href="{% url 'delete_job' job.id %}"
+                               class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+</div>
+
+{% else %}
+
+<!-- EMPTY STATE -->
+<div class="card border-0">
+    <div class="card-body text-center py-5">
+
+        <i class="bi bi-briefcase text-muted" style="font-size: 3rem;"></i>
+
+        <h5 class="mt-3">No job applications yet</h5>
+
+        <p class="text-muted">
+            Start tracking your applications by adding your first job.
+        </p>
+
+        <a href="{% url 'add_job' %}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-2"></i>
+            Add Job
+        </a>
+
+    </div>
+</div>
+
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    // SEARCH
+    const searchInput = document.querySelector('input[name="search"]');
+    if (searchInput) {
+        let timeout;
+
+        searchInput.addEventListener('input', function () {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                searchInput.closest('form')?.submit();
+            }, 400);
+        });
+    }
+
+    // STATUS FILTER
+    const statusSelect = document.querySelector('select[name="status"]');
+    if (statusSelect) {
+        statusSelect.addEventListener('change', function () {
+            statusSelect.closest('form')?.submit();
+        });
+    }
+
+});
+
+
+// ================= DRAWER =================
+function openJobDrawer(jobId, company, position, status) {
+
+    console.log("drawer opened");
+
+    const drawerEl = document.getElementById("jobDrawer");
+    const drawer = new bootstrap.Offcanvas(drawerEl);
+
+    const loading = document.getElementById("aiLoadingState");
+    const result = document.getElementById("aiResultSection");
+
+    // Open drawer immediately
+    drawer.show();
+
+    // Job info
+    document.getElementById("drawerCompany").innerText = company || "";
+    document.getElementById("drawerPosition").innerText = position || "";
+    const statusBadge = document.getElementById("drawerStatus");
+
+    statusBadge.innerText = status || "";
+
+    statusBadge.className =
+        "status-badge drawer-status " + getStatusClass(status);
+
+    // Loading state
+    if (loading) {
+        loading.innerHTML = `
+            <div class="ai-thinking mb-3">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+
+            <h6 class="fw-semibold">Analyzing Job Match...</h6>
+
+            <p class="text-muted small">
+                Our AI is comparing your resume with this job posting
+            </p>
+        `;
+        loading.classList.remove("d-none");
+    }
+
+    if (result) {
+        result.classList.add("d-none");
+    }
+
+    // Reset UI
+    document.getElementById("drawerScore").innerText = "--";
+    document.getElementById("drawerScoreBar").style.width = "0%";
+    document.getElementById("drawerStrengths").innerHTML = "";
+    document.getElementById("drawerMissing").innerHTML = "";
+    document.getElementById("drawerRecommendation").innerText = "";
+
+    // Fetch AI
+    fetch(`/jobs/${jobId}/ai/`)
+        .then(async (res) => {
+            const text = await res.text();
+
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                console.error("Invalid JSON response:", text);
+                throw new Error("Server returned non-JSON response");
+            }
+
+            if (!res.ok) {
+                throw new Error(data.error || "AI request failed");
+            }
+
+            return data;
+        })
+        .then(data => {
+            console.log("AI DATA:", data);
+
+            if (loading) loading.classList.add("d-none");
+            if (result) result.classList.remove("d-none");
+
+
+            renderAI(data);
+        })
+        .catch(err => {
+            console.error("AI Error:", err);
+
+            if (loading) {
+                loading.innerHTML = `
+                    <div class="text-danger small">
+                        Failed to load AI analysis.
+                    </div>
+                `;
+                loading.classList.remove("d-none");
+            }
+
+            if (result) result.classList.add("d-none");
+        });
+}
+
+function getScoreStyle(score) {
+    if (score >= 80) {
+        return {
+            label: "Great Match!",
+            colorClass: "score-great",
+            barClass: "bg-success"
+        };
+    }
+
+    if (score >= 60) {
+        return {
+            label: "Moderate Match",
+            colorClass: "score-moderate",
+            barClass: "bg-warning"
+        };
+    }
+
+    return {
+        label: "Low Match",
+        colorClass: "score-low",
+        barClass: "bg-danger"
+    };
+}
+
+function getStatusClass(status) {
+
+    switch (status) {
+
+        case "Applied":
+            return "status-applied";
+
+        case "Interview":
+            return "status-interview";
+
+        case "Assessment":
+            return "status-assessment";
+
+        case "Offer":
+            return "status-offer";
+
+        case "Rejected":
+            return "status-rejected";
+
+        default:
+            return "";
+    }
+
+}
+
+function animateScore(scoreElement, targetScore, barElement) {
+    const duration = 900;
+    const start = performance.now();
+
+    scoreElement.innerText = "0";
+    barElement.style.width = "0%";
+
+    function update(currentTime) {
+        const elapsed = currentTime - start;
+        const progress = Math.min(elapsed / duration, 1);
+
+        const easedProgress = 1 - Math.pow(1 - progress, 3);
+        const currentScore = Math.round(easedProgress * targetScore);
+
+        scoreElement.innerText = currentScore;
+        barElement.style.width = currentScore + "%";
+
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        } else {
+            scoreElement.innerText = targetScore;
+            barElement.style.width = targetScore + "%";
+        }
+    }
+
+    requestAnimationFrame(update);
+}
+
+function renderAI(data) {
+
+    const strengthsEl = document.getElementById("drawerStrengths");
+    const missingEl = document.getElementById("drawerMissing");
+    const recommendationEl = document.getElementById("drawerRecommendation");
+
+    console.log("RENDERING AI:", data);
+
+    // ===== SCORE =====
+    const score = data.match_score ?? 0;
+    const scoreStyle = getScoreStyle(score);
+
+    const scoreEl = document.getElementById("drawerScore");
+    const scoreBar = document.getElementById("drawerScoreBar");
+    const scoreLabel = document.getElementById("drawerScoreLabel");
+
+    animateScore(scoreEl, score, scoreBar);
+
+    scoreLabel.innerText = scoreStyle.label;
+    scoreLabel.className = "fw-bold mb-1 " + scoreStyle.colorClass;
+
+    scoreBar.className = "progress-bar " + scoreStyle.barClass;
+
+    // ===== STRENGTHS =====
+    strengthsEl.innerHTML = (data.strengths || [])
+        .map(item => `<li>${item}</li>`)
+        .join("");
+
+    // ===== MISSING =====
+    missingEl.innerHTML = (data.missing_skills || [])
+        .map(item => `<li>${item}</li>`)
+        .join("");
+
+    // ===== RECOMMENDATION =====
+    recommendationEl.innerText =
+        data.recommendation || "No recommendation available.";
+}
+
+</script>
+
+{% endblock %}

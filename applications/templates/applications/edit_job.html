@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid px-4">
+
+    <!-- HERO (FULL WIDTH, LEFT ALIGNED) -->
+    <div class="hero-card-edit text-white p-4 p-lg-5 rounded-4 mb-4">
+
+        <div class="d-flex justify-content-between align-items-center">
+
+            <div>
+                <h2 class="fw-bold mb-1">Edit Job Application</h2>
+                <p class="mb-0 opacity-75">
+                    Update your application details and track progress
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FULL WIDTH FORM AREA -->
+    <div class="card border-0">
+        <div class="card-body p-4 p-lg-5">
+
+            <form method="POST" class="row g-4">
+                {% csrf_token %}
+
+                <!-- Company -->
+                <div class="col-12">
+                    <label class="form-label text-soft mb-1">Company</label>
+                </div>
+                {{ form.company_name }}
+
+                <!-- Position -->
+                <div class="col-12">
+                    <label class="form-label text-soft mb-1">Position</label>
+                </div>
+                 {{ form.position }}
+
+                <!-- Status -->
+                <div class="col-12">
+                    <label class="form-label text-soft mb-1">Status</label>
+                </div>
+                {{ form.status }}
+
+                <!-- Salary -->
+                <div class="col-12">
+                    <label class="form-label text-soft mb-1">Salary</label>
+                </div>
+                {{ form.salary }}
+
+                <!-- Job Link -->
+                <div class="col-12">
+                    <label class="form-label text-soft mb-1">Job Link</label>    
+                </div>
+                {{ form.job_link }}
+
+                <!-- Notes -->
+                <div class="col-12">
+                    <label class="form-label text-soft mb-1">Notes</label>  
+                </div>
+                {{ form.notes }}
+
+                <!-- ACTIONS -->
+                <div class="col-12 d-flex justify-content-end pt-3">
+
+                    <a href="{% url 'job_detail' form.instance.id %}"
+                       class="btn btn-outline-secondary me-2">
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="btn btn-primary px-4">
+                        Save Changes
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
