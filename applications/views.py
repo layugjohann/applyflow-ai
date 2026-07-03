@@ -289,11 +289,10 @@ def resume_manager(request):
     # -------------------------
     if request.method == "POST" and "upload_resume" in request.POST:
 
+    try:
         resume_file = request.FILES.get("resume_file")
 
         if resume_file:
-
-            # Optional: make previous inactive
             Resume.objects.filter(user=request.user).update(is_active=False)
 
             Resume.objects.create(
@@ -302,6 +301,10 @@ def resume_manager(request):
                 is_active=True
             )
 
+        return redirect("resume_manager")
+
+    except Exception as e:
+        print("RESUME UPLOAD ERROR:", str(e))
         return redirect("resume_manager")
 
     # -------------------------
