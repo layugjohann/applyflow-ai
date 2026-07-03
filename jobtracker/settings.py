@@ -89,12 +89,24 @@ WSGI_APPLICATION = 'jobtracker.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    "default": dj_database_url.config(
-        default=f"mysql://root:@127.0.0.1:3307/job_tracker_db",
-        conn_max_age=600
-    )
-}
+if DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": "job_tracker_db",
+            "USER": "root",
+            "PASSWORD": "",
+            "HOST": "127.0.0.1",
+            "PORT": "3307",
+        }
+    }
+else:
+    DATABASES = {
+        "default": dj_database_url.config(
+            conn_max_age=600,
+            ssl_require=True,
+        )
+    }
 
 
 # Password validation
