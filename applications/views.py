@@ -289,22 +289,31 @@ def resume_manager(request):
     # -------------------------
     if request.method == "POST" and "upload_resume" in request.POST:
 
-    try:
-        resume_file = request.FILES.get("resume_file")
+        try:
+            resume_file = request.FILES.get("resume_file")
 
-        if resume_file:
+            if not resume_file:
+                print("No file uploaded.")
+                return redirect("resume_manager")
+
+            # Deactivate current active resume
             Resume.objects.filter(user=request.user).update(is_active=False)
 
+            # Save new resume
             Resume.objects.create(
                 user=request.user,
                 file=resume_file,
                 is_active=True
             )
 
-        return redirect("resume_manager")
+            print("Resume uploaded successfully.")
 
-    except Exception as e:
-        print("RESUME UPLOAD ERROR:", str(e))
+        except Exception as e:
+            import traceback
+            print("========== RESUME UPLOAD ERROR ==========")
+            traceback.print_exc()
+            print("=========================================")
+
         return redirect("resume_manager")
 
     # -------------------------
@@ -337,10 +346,14 @@ def resume_manager(request):
 
         return redirect("resume_manager")
 
-    return render(request, "applications/resume_manager.html", {
-        "resumes": resumes,
-        "latest_resume": latest_resume
-    })
+    return render(
+        request,
+        "applications/resume_manager.html",
+        {
+            "resumes": resumes,
+            "latest_resume": latest_resume,
+        },
+    )
 
 @login_required
 def job_ai_analysis(request, job_id):
