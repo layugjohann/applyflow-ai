@@ -71,7 +71,7 @@ def add_job(request):
 
                 try:
                     resume_text = extract_text_from_pdf(
-                        latest_resume.file.path
+                        latest_resume.file
                     )
 
                     job.resume = latest_resume
@@ -410,7 +410,7 @@ def job_ai_analysis(request, job_id):
 
     try:
         print("STEP 1: Resume extracted")
-        resume_text = extract_text_from_pdf(resume.file.path)
+        resume_text = extract_text_from_pdf(resume.file)
 
         print("STEP 2: About to call AI")
         ai_data = AIService.match_resume_to_job(
