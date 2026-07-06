@@ -61,53 +61,72 @@ def add_job(request):
             job.user = request.user
             job.save()
 
-            # Get job link from form
             job_link = form.cleaned_data.get("job_link")
 
-            # Get latest uploaded resume
             latest_resume = Resume.objects.filter(
                 user=request.user
             ).order_by("-uploaded_at").first()
 
-            resume_text = ""
-
             if latest_resume:
 
-                resume_text = extract_text_from_pdf(
-                    latest_resume.file.path
-                )
-
-                job.resume = latest_resume
-                job.save()
-
-                # =====================
-                # AI STEP
-                # =====================
-                if resume_text and job_link:
-
-                    print("CALLING AI NOW...")
-
-                    ai_data = AIService.match_resume_to_job(
-                        resume_text,
-                        job_link
+                try:
+                    resume_text = extract_text_from_pdf(
+                        latest_resume.file.path
                     )
 
-                    print("AI RESPONSE:", ai_data)
-
-                    job.match_score = ai_data.get("match_score")
-                    job.strengths = "\n".join(
-                        ai_data.get("strengths", [])
-                    )
-                    job.missing_skills = "\n".join(
-                        ai_data.get("missing_skills", [])
-                    )
-                    job.recommendation = ai_data.get(
-                        "recommendation"
-                    )
-
+                    job.resume = latest_resume
                     job.save()
 
-                    print("AI DONE AND SAVED")
+                    if resume_text and job_link:
+
+                        try:
+                            print("CALLING AI NOW...")
+
+                            ai_data = AIService.match_resume_to_job(
+                                resume_text,
+                                job_link
+                            )
+
+                            print("AI RESPONSE:", ai_data)
+
+                            job.match_score = ai_data.get("match_score", 0)
+
+                            job.strengths = "\n".join(
+                                ai_data.get("strengths", [])
+                            )
+
+                            job.missing_skills = "\n".join(
+                                ai_data.get("missing_skills", [])
+                            )
+
+                            job.recommendation = ai_data.get(
+                                "recommendation",
+                                ""
+                            )
+
+                            job.save()
+
+                            print("AI DONE AND SAVED")
+
+                        except Exception as e:
+                            import traceback
+
+                            print("========== ADD JOB AI ERROR ==========")
+                            print("ERROR TYPE:", type(e).__name__)
+                            print("ERROR MESSAGE:", repr(e))
+                            print("FULL TRACEBACK:")
+                            print(traceback.format_exc())
+                            print("======================================")
+
+                except Exception as e:
+                    import traceback
+
+                    print("========== RESUME EXTRACTION ERROR ==========")
+                    print("ERROR TYPE:", type(e).__name__)
+                    print("ERROR MESSAGE:", repr(e))
+                    print("FULL TRACEBACK:")
+                    print(traceback.format_exc())
+                    print("=============================================")
 
             return redirect("job_list")
 
