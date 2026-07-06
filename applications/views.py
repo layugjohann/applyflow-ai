@@ -299,6 +299,9 @@ def resume_manager(request):
             # Deactivate current active resume
             Resume.objects.filter(user=request.user).update(is_active=False)
 
+            print("Resume file received:", resume_file.name)
+            print("Resume file size:", resume_file.size)
+
             # Save new resume
             Resume.objects.create(
                 user=request.user,
@@ -310,11 +313,13 @@ def resume_manager(request):
 
         except Exception as e:
             import traceback
-            print("========== RESUME UPLOAD ERROR ==========")
-            traceback.print_exc()
-            print("=========================================")
 
-        return redirect("resume_manager")
+            print("========== RESUME UPLOAD ERROR ==========")
+            print("ERROR TYPE:", type(e).__name__)
+            print("ERROR MESSAGE:", repr(e))
+            print("FULL TRACEBACK:")
+            print(traceback.format_exc())
+            print("=========================================")
 
     # -------------------------
     # SET ACTIVE RESUME
