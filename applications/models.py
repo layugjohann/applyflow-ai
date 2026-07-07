@@ -58,7 +58,7 @@ class JobApplication(models.Model):
 
 class Resume(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='resumes/')
+    file = models.FileField(upload_to="")
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     is_active = models.BooleanField(default=False)
