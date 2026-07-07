@@ -176,7 +176,7 @@ if os.getenv("SUPABASE_S3_ACCESS_KEY_ID"):
     AWS_S3_ADDRESSING_STYLE = "path"
     AWS_DEFAULT_ACL = None
     AWS_QUERYSTRING_AUTH = True
-    AWS_S3_FILE_OVERWRITE = False
+    AWS_S3_FILE_OVERWRITE = True
 
 else:
     STORAGES = {
