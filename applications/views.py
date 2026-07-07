@@ -383,12 +383,12 @@ def resume_manager(request):
     except Exception as e:
         import traceback
 
-        print("========== RESUME MANAGER RENDER ERROR ==========")
-        print("ERROR TYPE:", type(e).__name__)
-        print("ERROR MESSAGE:", repr(e))
-        print("FULL TRACEBACK:")
-        print(traceback.format_exc())
-        print("=================================================")
+        print("========== RESUME MANAGER RENDER ERROR ==========", flush=True)
+        print("ERROR TYPE:", type(e).__name__, flush=True)
+        print("ERROR MESSAGE:", repr(e), flush=True)
+        print("FULL TRACEBACK:", flush=True)
+        print(traceback.format_exc(), flush=True)
+        print("=================================================", flush=True)
 
         return HttpResponse("Resume Manager temporarily unavailable.", status=500)
 
