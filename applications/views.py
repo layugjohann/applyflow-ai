@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models.functions import TruncMonth
 from django.db.models import Count
 from django.utils import timezone
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from .utils.pdf_utils import extract_text_from_pdf
@@ -12,7 +12,7 @@ from django.contrib import messages
 from .services.ai_service import AIService
 
 from .models import JobApplication, Resume
-from .forms import JobApplicationForm
+from .forms import JobApplicationForm 
 
 def normalize_list(field):
     if isinstance(field, list):
@@ -370,14 +370,27 @@ def resume_manager(request):
 
         return redirect("resume_manager")
 
-    return render(
-        request,
-        "applications/resume_manager.html",
-        {
-            "resumes": resumes,
-            "latest_resume": latest_resume,
-        },
-    )
+    try:
+        return render(
+            request,
+            "applications/resume_manager.html",
+            {
+                "resumes": resumes,
+                "latest_resume": latest_resume,
+            },
+        )
+
+    except Exception as e:
+        import traceback
+
+        print("========== RESUME MANAGER RENDER ERROR ==========")
+        print("ERROR TYPE:", type(e).__name__)
+        print("ERROR MESSAGE:", repr(e))
+        print("FULL TRACEBACK:")
+        print(traceback.format_exc())
+        print("=================================================")
+
+        return HttpResponse("Resume Manager temporarily unavailable.", status=500)
 
 @login_required
 def job_ai_analysis(request, job_id):
