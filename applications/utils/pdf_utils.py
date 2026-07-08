@@ -12,14 +12,13 @@ def extract_text_from_pdf(file_or_path):
     text = ""
 
     if isinstance(file_or_path, str):
-        # Local filesystem (development)
         doc = fitz.open(file_or_path)
 
     else:
-        # FieldFile / UploadedFile
         file_or_path.open("rb")
 
         try:
+            file_or_path.seek(0)   # <-- Add this
             pdf_bytes = file_or_path.read()
 
             doc = fitz.open(
