@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- PAGE HEADER -->
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+
+        <div>
+            <p class="text-soft small text-uppercase mb-2">
+                AI Cover Letter
+            </p>
+
+            <h2 class="fw-bold mb-1">
+                {{ job.position }}
+            </h2>
+
+            <p class="text-muted mb-0">
+                {{ job.company_name }}
+            </p>
+        </div>
+
+        <a
+            href="{% url 'job_detail' job.id %}"
+            class="btn btn-outline-light">
+
+            <i class="bi bi-arrow-left me-2"></i>
+            Back to Job
+
+        </a>
+
+    </div>
+
+    <!-- RESULT CARD -->
+    <div class="card border-0">
+        <div class="card-body p-4 p-lg-5">
+
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+
+                <div>
+                    <h5 class="fw-bold mb-1">
+                        Generated Cover Letter
+                    </h5>
+
+                    <p class="text-muted small mb-0">
+                        Review and personalize the letter before submitting it.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    id="copyCoverLetter"
+                    class="btn btn-success">
+
+                    <i class="bi bi-clipboard me-2"></i>
+                    Copy Letter
+
+                </button>
+
+            </div>
+
+            <div
+                id="coverLetterText"
+                class="p-4 rounded-3 border"
+                style="white-space: pre-wrap; line-height: 1.8;">{{ cover_letter }}</div>
+
+            <div class="d-flex flex-wrap gap-2 mt-4">
+
+                <form
+                    method="POST"
+                    action="{% url 'generate_cover_letter' job.id %}">
+
+                    {% csrf_token %}
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-arrow-repeat me-2"></i>
+                        Regenerate
+                    </button>
+
+                </form>
+
+                <a
+                    href="{% url 'job_detail' job.id %}"
+                    class="btn btn-outline-light">
+
+                    Done
+
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const copyButton = document.getElementById("copyCoverLetter");
+    const coverLetter = document.getElementById("coverLetterText");
+
+    copyButton.addEventListener("click", async () => {
+        try {
+            await navigator.clipboard.writeText(
+                coverLetter.innerText.trim()
+            );
+
+            const originalText = copyButton.innerHTML;
+
+            copyButton.innerHTML = `
+                <i class="bi bi-check-lg me-2"></i>
+                Copied
+            `;
+
+            setTimeout(() => {
+                copyButton.innerHTML = originalText;
+            }, 1800);
+
+        } catch (error) {
+            console.error("Copy failed:", error);
+        }
+    });
+});
+</script>
+
+{% endblock %}

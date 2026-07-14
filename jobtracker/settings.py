@@ -90,24 +90,20 @@ WSGI_APPLICATION = 'jobtracker.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-if DEBUG:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.mysql",
-            "NAME": "job_tracker_db",
-            "USER": "root",
-            "PASSWORD": "",
-            "HOST": "127.0.0.1",
-            "PORT": "3307",
-        }
-    }
-else:
-    DATABASES = {
-        "default": dj_database_url.config(
-            conn_max_age=600,
-            ssl_require=True,
-        )
-    }
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise RuntimeError(
+        "DATABASE_URL is missing. Please configure your Supabase connection."
+    )
+
+DATABASES = {
+    "default": dj_database_url.parse(
+        DATABASE_URL,
+        conn_max_age=600,
+        ssl_require=True,
+    )
+}
 
 
 # Password validation

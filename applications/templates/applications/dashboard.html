@@ -1,288 +1,405 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<!-- HERO SECTION -->
-<div class="row mb-4">
-    <div class="col-xl-8 col-lg-10">
+<!-- HERO -->
+<section class="dashboard-hero mb-4">
+    <div class="hero-card dashboard-surface">
+        <div>
+            <h1 class="dashboard-hero-title">
+                👋 Welcome back!
+            </h1>
 
-        <div class="hero-card p-5 rounded-4 shadow-sm">
-
-            <div class="d-flex justify-content-between align-items-center">
-
-                <div>
-                    <h2 class="mb-1 fw-bold text-white">👋 Welcome back!</h2>
-                    <p class="mb-0 opacity-75">
-                        Track your job applications and pipeline progress in real time
-                    </p>
-                </div>
-
-            </div>
-
+            <p class="dashboard-hero-copy">
+                Track your job applications and pipeline progress in real time.
+            </p>
         </div>
-
     </div>
-</div>
+</section>
 
 <!-- PAGE HEADER -->
-<div class="mb-4">
-    <h2 class="fw-bold">Dashboard</h2>
-    <p class="text-muted">Overview of your job application activity</p>
-</div>
+<header class="dashboard-header mb-4">
+    <h2 class="dashboard-page-title">Dashboard</h2>
+    <p class="dashboard-page-subtitle">
+        Overview of your job application activity
+    </p>
+</header>
 
-<!-- KPI CARDS (FIXED GRID - IMPORTANT FIX) -->
-<div class="row row-cols-1 row-cols-md-3 row-cols-xl-6 g-4 mb-4">
+<!-- KPI GRID -->
+<section class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-6 g-4 mb-4">
 
     <!-- TOTAL -->
     <div class="col">
-        <div class="card border-0 h-100">
-            <div class="card border-0 h-100 dashboard-card animate-card">
-                <div>
-                    <small class="text-muted text-uppercase">Total</small>
-                    <h2 class="fw-bold mb-0">{{ total_jobs }}</h2>
-                </div>
-            <div class="kpi-icon kpi-icon-total">
+        <article class="dashboard-card dashboard-kpi-card animate-card h-100 d-flex align-items-center p-4">
+
+            <div class="kpi-icon kpi-icon-total flex-shrink-0">
                 <i class="bi bi-briefcase"></i>
             </div>
+
+            <div class="dashboard-kpi-content text-center flex-grow-1 px-2">
+                <span class="dashboard-kpi-label d-block mb-2">
+                    Total
+                </span>
+
+                <strong class="dashboard-kpi-value d-block">
+                    {{ total_jobs }}
+                </strong>
             </div>
-        </div>
+
+            <div class="kpi-icon invisible flex-shrink-0" aria-hidden="true">
+                <i class="bi bi-briefcase"></i>
+            </div>
+
+        </article>
     </div>
 
     <!-- APPLIED -->
     <div class="col">
-        <div class="card border-0 h-100">
-            <div class="card border-0 h-100 dashboard-card animate-card">
-                <div>
-                    <small class="text-muted text-uppercase">Applied</small>
-                    <h2 class="fw-bold mb-0">{{ applied_count }}</h2>
-                </div>
-                <div class="kpi-icon kpi-icon-primary">
-                    <i class="bi bi-send"></i>
-                </div>
+        <article class="dashboard-card dashboard-kpi-card animate-card h-100 d-flex align-items-center p-4">
+
+            <div class="kpi-icon kpi-icon-primary flex-shrink-0">
+                <i class="bi bi-send"></i>
             </div>
-        </div>
+
+            <div class="dashboard-kpi-content text-center flex-grow-1 px-2">
+                <span class="dashboard-kpi-label d-block mb-2">
+                    Applied
+                </span>
+
+                <strong class="dashboard-kpi-value d-block">
+                    {{ applied_count }}
+                </strong>
+            </div>
+
+            <div class="kpi-icon invisible flex-shrink-0" aria-hidden="true">
+                <i class="bi bi-send"></i>
+            </div>
+
+        </article>
     </div>
 
     <!-- INTERVIEW -->
     <div class="col">
-        <div class="card border-0 h-100">
-            <div class="card border-0 h-100 dashboard-card animate-card">
-                <div>
-                    <small class="text-muted text-uppercase">Interview</small>
-                    <h2 class="fw-bold mb-0">{{ interview_count }}</h2>
-                </div>
-                <div class="kpi-icon kpi-icon-warning">
-                    <i class="bi bi-person-video3"></i>
-                </div>
+        <article class="dashboard-card dashboard-kpi-card animate-card h-100 d-flex align-items-center p-4">
+
+            <div class="kpi-icon kpi-icon-warning flex-shrink-0">
+                <i class="bi bi-person-video3"></i>
             </div>
-        </div>
+
+            <div class="dashboard-kpi-content text-center flex-grow-1 px-2">
+                <span class="dashboard-kpi-label d-block mb-2">
+                    Interview
+                </span>
+
+                <strong class="dashboard-kpi-value d-block">
+                    {{ interview_count }}
+                </strong>
+            </div>
+
+            <div class="kpi-icon invisible flex-shrink-0" aria-hidden="true">
+                <i class="bi bi-person-video3"></i>
+            </div>
+
+        </article>
     </div>
 
     <!-- ASSESSMENT -->
     <div class="col">
-        <div class="card border-0 h-100">
-            <div class="card border-0 h-100 dashboard-card animate-card">
-                <div>
-                    <small class="text-muted text-uppercase">Assessment</small>
-                    <h2 class="fw-bold mb-0">{{ assessment_count }}</h2>
-                </div>
-                <div class="kpi-icon kpi-icon-purple">
-                    <i class="bi bi-clipboard-check"></i>
-                </div>
+        <article class="dashboard-card dashboard-kpi-card animate-card h-100 d-flex align-items-center p-4">
+
+            <div class="kpi-icon kpi-icon-purple flex-shrink-0">
+                <i class="bi bi-clipboard-check"></i>
             </div>
-        </div>
+
+            <div class="dashboard-kpi-content text-center flex-grow-1 px-2">
+                <span class="dashboard-kpi-label d-block mb-2">
+                    Assessment
+                </span>
+
+                <strong class="dashboard-kpi-value d-block">
+                    {{ assessment_count }}
+                </strong>
+            </div>
+
+            <div class="kpi-icon invisible flex-shrink-0" aria-hidden="true">
+                <i class="bi bi-clipboard-check"></i>
+            </div>
+
+        </article>
     </div>
 
     <!-- OFFER -->
     <div class="col">
-        <div class="card border-0 h-100">
-            <div class="card border-0 h-100 dashboard-card animate-card">
-                <div>
-                    <small class="text-muted text-uppercase">Offer</small>
-                    <h2 class="fw-bold mb-0">{{ offer_count }}</h2>
-                </div>
-                <div class="kpi-icon kpi-icon-success">
-                    <i class="bi bi-trophy"></i>
-                </div>
+        <article class="dashboard-card dashboard-kpi-card animate-card h-100 d-flex align-items-center p-4">
+
+            <div class="kpi-icon kpi-icon-success flex-shrink-0">
+                <i class="bi bi-trophy"></i>
             </div>
-        </div>
+
+            <div class="dashboard-kpi-content text-center flex-grow-1 px-2">
+                <span class="dashboard-kpi-label d-block mb-2">
+                    Offer
+                </span>
+
+                <strong class="dashboard-kpi-value d-block">
+                    {{ offer_count }}
+                </strong>
+            </div>
+
+            <div class="kpi-icon invisible flex-shrink-0" aria-hidden="true">
+                <i class="bi bi-trophy"></i>
+            </div>
+
+        </article>
     </div>
 
     <!-- REJECTED -->
     <div class="col">
-        <div class="card border-0 h-100">
-            <div class="card border-0 h-100 dashboard-card animate-card">
-                <div>
-                    <small class="text-muted text-uppercase">Rejected</small>
-                    <h2 class="fw-bold mb-0">{{ rejected_count }}</h2>
-                </div>
-                <div class="kpi-icon kpi-icon-danger">
-                    <i class="bi bi-x-circle"></i>
-                </div>
+        <article class="dashboard-card dashboard-kpi-card animate-card h-100 d-flex align-items-center p-4">
+
+            <div class="kpi-icon kpi-icon-danger flex-shrink-0">
+                <i class="bi bi-x-circle"></i>
             </div>
-        </div>
-    </div>
 
-</div>
-
-
-<!-- CHARTS -->
-<!-- MAIN GRID -->
-<div class="row g-4">
-
-    <!-- LEFT: PIE CHART ONLY -->
-    <div class="col-xl-6">
-        <div class="card border-0 h-100 dashboard-card animate-card">
-            <div class="card-body">
-                <div class="section-title">
-                    Application Breakdown
-                </div>
-                <canvas id="statusChart" class="chart-animate"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <!-- RIGHT: STACKED METRICS -->
-    <div class="col-xl-6">
-
-        <!-- SUCCESS RATE -->
-        <div class="card card-lg mb-4">
-            <div class="card border-0 h-100 dashboard-card animate-card">
-                <div class="section-title">
-                    Sucess Rate
-                </div>
-                <h1 class="fw-bold text-success">{{ success_rate }}%</h1>
-            </div>
-        </div>
-
-        <div class="col mb-4">
-
-    <div class="card card-lg border-0 h-100">
-
-        <div class="card-body">
-
-            <div class="card border-0 h-100 dashboard-card animate-card">
-                <div class="section-title mb-2">
-                    Monthly Goal
-                </div>
-
-                <span class="badge bg-primary mb-2">
-                    {{ current_month_apps }}/{{ monthly_goal }}
+            <div class="dashboard-kpi-content text-center flex-grow-1 px-2">
+                <span class="dashboard-kpi-label d-block mb-2">
+                    Rejected
                 </span>
+
+                <strong class="dashboard-kpi-value d-block">
+                    {{ rejected_count }}
+                </strong>
             </div>
 
-            <h3 class="fw-bold mb-2">
-                {{ goal_progress }}%
+            <div class="kpi-icon invisible flex-shrink-0" aria-hidden="true">
+                <i class="bi bi-x-circle"></i>
+            </div>
+
+        </article>
+    </div>
+
+</section>
+
+<!-- DASHBOARD MAIN GRID -->
+<section class="row g-4">
+
+    <!-- APPLICATION BREAKDOWN -->
+    <div class="col-xl-6">
+        <article class="dashboard-card dashboard-panel animate-card dashboard-main-height">
+
+            <header class="dashboard-card-header">
+                <div>
+                    <h3 class="dashboard-card-title">
+                        Application Breakdown
+                    </h3>
+
+                    <p class="dashboard-card-description">
+                        Distribution of applications by current status.
+                    </p>
+                </div>
+            </header>
+
+            <div class="dashboard-card-body">
+            <div class="status-chart-wrapper">
+                <canvas
+                    id="statusChart"
+                    class="chart-animate">
+                </canvas>
+            </div>
+        </div>
+
+        </article>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="col-xl-6">
+        <div class="dashboard-stack dashboard-main-height">
+
+            <!-- SUCCESS RATE -->
+<article class="dashboard-card dashboard-panel animate-card p-4">
+
+    <div class="mb-4">
+        <h3 class="dashboard-card-title mb-2">
+            Success Rate
+        </h3>
+
+        <p class="dashboard-card-description mb-0">
+            Percentage of applications reaching a successful stage.
+        </p>
+    </div>
+
+    <strong class="dashboard-highlight-value text-success d-block">
+        {{ success_rate }}%
+    </strong>
+
+</article>
+
+            <!-- MONTHLY GOAL -->
+<article class="dashboard-card dashboard-panel animate-card p-4">
+
+    <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+
+        <div>
+            <h3 class="dashboard-card-title mb-2">
+                Monthly Goal
             </h3>
 
-            <div class="progress" style="height: 8px;">
-                <div class="progress-bar bg-success animated-progress"
-                     data-progress="{{ goal_progress }}"
-                     style="width: 0%;">
-                </div>
-            </div>
+            <p class="dashboard-card-description mb-0">
+                Your application progress for the current month.
+            </p>
+        </div>
 
+        <span class="dashboard-card-meta flex-shrink-0">
+            {{ current_month_apps }}/{{ monthly_goal }}
+        </span>
+
+    </div>
+
+    <div class="d-flex align-items-baseline gap-2 mb-4">
+        <strong class="dashboard-highlight-value d-block">
+            {{ goal_progress }}%
+        </strong>
+
+        <span class="dashboard-goal-label">
+            completed
+        </span>
+    </div>
+
+    <div
+        class="progress dashboard-progress"
+        role="progressbar"
+        aria-label="Monthly application goal"
+        aria-valuenow="{{ goal_progress }}"
+        aria-valuemin="0"
+        aria-valuemax="100">
+
+        <div
+            class="progress-bar animated-progress"
+            data-progress="{{ goal_progress }}"
+            style="width: 0%;">
         </div>
 
     </div>
 
-</div>
+</article>
+            <!-- MONTHLY APPLICATIONS -->
+            <article class="dashboard-card dashboard-panel animate-card">
 
-        <!-- MONTHLY CHART (MOVED HERE) -->
-        <div class="card card-lg border-0">
-            <div class="card-body">
-                <div class="card border-0 h-100 dashboard-card animate-card">
-                    <div class="section-title">
-                        Applications per Month
+                <header class="dashboard-card-header">
+                    <div>
+                        <h3 class="dashboard-card-title">
+                            Applications per Month
+                        </h3>
+
+                        <p class="dashboard-card-description">
+                            Application activity over recent months.
+                        </p>
                     </div>
-                </div>
-                <canvas id="monthlyChart" class="chart-animate"></canvas>
-            </div>
-        </div>
+                </header>
 
+                <div class="dashboard-card-body dashboard-chart-body">
+                    <canvas
+                        id="monthlyChart"
+                        class="chart-animate">
+                    </canvas>
+                </div>
+
+            </article>
+
+        </div>
     </div>
-</div>
+
+</section>
 
 <!-- RECENT APPLICATIONS -->
-<div class="card card-lg mt-4">
-    <div class="card border-0 h-100 dashboard-card animate-card">
+<section class="mt-4">
+    <article class="dashboard-card dashboard-panel animate-card">
 
-        <div class="section-title mb-2">
-            Recent Applications
+        <header class="dashboard-card-header">
+            <div>
+                <h3 class="dashboard-card-title">
+                    Recent Applications
+                </h3>
+
+                <p class="dashboard-card-description">
+                    Your latest job application activity.
+                </p>
+            </div>
+        </header>
+
+        <div class="dashboard-card-body dashboard-table-body">
+
+            {% if recent_jobs %}
+                <div class="table-responsive">
+
+                    <table class="table dashboard-table align-middle mb-0">
+
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th>Position</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for job in recent_jobs %}
+                                <tr>
+                                    <td>
+                                        <a
+                                            href="{% url 'job_detail' job.id %}"
+                                            class="job-link fw-semibold">
+                                            {{ job.company_name }}
+                                        </a>
+                                    </td>
+
+                                    <td>{{ job.position }}</td>
+
+                                    <td>
+                                        {% if job.status == 'Applied' %}
+                                            <span class="badge status-applied">
+                                                {{ job.status }}
+                                            </span>
+
+                                        {% elif job.status == 'Interview' %}
+                                            <span class="badge status-interview">
+                                                {{ job.status }}
+                                            </span>
+
+                                        {% elif job.status == 'Assessment' %}
+                                            <span class="badge status-assessment">
+                                                {{ job.status }}
+                                            </span>
+
+                                        {% elif job.status == 'Offer' %}
+                                            <span class="badge status-offer">
+                                                {{ job.status }}
+                                            </span>
+
+                                        {% elif job.status == 'Rejected' %}
+                                            <span class="badge status-rejected">
+                                                {{ job.status }}
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+
+                </div>
+            {% else %}
+                <div class="dashboard-empty-state">
+                    <i class="bi bi-briefcase"></i>
+                    <p class="mb-0">No applications yet.</p>
+                </div>
+            {% endif %}
+
         </div>
 
-        {% if recent_jobs %}
-        <div class="table-responsive">
+    </article>
+</section>
 
-            <table class="table table-hover align-middle">
-
-                <thead>
-                    <tr>
-                        <th>Company</th>
-                        <th>Position</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    {% for job in recent_jobs %}
-                    <tr>
-
-                        <td>
-                            <a href="{% url 'job_detail' job.id %}"
-                               class="job-link fw-semibold">
-                                {{ job.company_name }}
-                            </a>
-                        </td>
-
-                        <td>{{ job.position }}</td>
-
-                        <td>
-
-                            {% if job.status == 'Applied' %}
-                                <span class="badge status-applied">
-                                    {{ job.status }}
-                                </span>
-
-                            {% elif job.status == 'Interview' %}
-                                <span class="badge status-interview">
-                                    {{ job.status }}
-                                </span>
-
-                            {% elif job.status == 'Assessment' %}
-                                <span class="badge status-assessment">
-                                    {{ job.status }}
-                                </span>
-
-                            {% elif job.status == 'Offer' %}
-                                <span class="badge status-offer">
-                                    {{ job.status }}
-                                </span>
-
-                            {% elif job.status == 'Rejected' %}
-                                <span class="badge status-rejected">
-                                    {{ job.status }}
-                                </span>
-
-                            {% endif %}
-
-                        </td>
-
-                    </tr>
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-        {% else %}
-            <p class="text-muted">No applications yet.</p>
-        {% endif %}
-
-    </div>
-</div>
 <!-- CHART SCRIPT -->
 <script>
 new Chart(document.getElementById('statusChart'), {
@@ -320,29 +437,33 @@ new Chart(document.getElementById('statusChart'), {
     },
 
     options: {
-        cutout: '70%',
+    responsive: true,
+    maintainAspectRatio: false,
 
-        plugins: {
-            legend: {
-                position: 'bottom',
+    cutout: '70%',
 
-                labels: {
-                    color: '#cbd5e1',
-                    usePointStyle: true,
-                    pointStyle: 'circle',
-                    padding: 20
-                }
-            },
+    plugins: {
+        legend: {
+            position: 'bottom',
 
-            tooltip: {
-                backgroundColor: '#111827',
-                titleColor: '#ffffff',
-                bodyColor: '#e5e7eb',
-                borderColor: 'rgba(255,255,255,0.08)',
-                borderWidth: 1
+            labels: {
+                color: '#cbd5e1',
+                usePointStyle: true,
+                pointStyle: 'circle',
+                padding: 14
             }
+        },
+
+        tooltip: {
+            backgroundColor: '#111827',
+            titleColor: '#ffffff',
+            bodyColor: '#e5e7eb',
+            borderColor: 'rgba(255,255,255,0.08)',
+            borderWidth: 1
         }
     }
+}
+
 });
 
 new Chart(document.getElementById('monthlyChart'), {

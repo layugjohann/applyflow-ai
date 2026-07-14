@@ -460,3 +460,66 @@ def job_ai_analysis(request, job_id):
             "missing_skills": [],
             "recommendation": "AI service failed."
         }, status=500)
+
+@login_required
+def generate_cover_letter(request, job_id):
+    job = get_object_or_404(
+        JobApplication,
+        id=job_id,
+        user=request.user,
+    )
+
+    if request.method != "POST":
+        return redirect("job_detail", id=job.id)
+
+    # Prefer a resume explicitly assigned to this job.
+    resume = job.resume
+
+    # Otherwise, use the user's active resume.
+    if not resume:
+        resume = Resume.objects.filter(
+            user=request.user,
+            is_active=True,
+        ).first()
+
+    if not resume:
+        messages.error(
+            request,
+            "Please upload or select an active resume first."
+        )
+        return redirect("job_detail", id=job.id)
+
+    try:
+        resume_text = extract_text_from_pdf(resume.file)
+
+        if not resume_text:
+            raise ValueError(
+                "No readable text could be extracted from the resume."
+            )
+
+        cover_letter = AIService.generate_cover_letter(
+            resume_text=resume_text,
+            company_name=job.company_name,
+            position=job.position,
+            job_description=job.notes,
+            job_link=job.job_link,
+        )
+
+        return render(
+            request,
+            "applications/cover_letter.html",
+            {
+                "job": job,
+                "cover_letter": cover_letter,
+            },
+        )
+
+    except Exception as error:
+        print("COVER LETTER ERROR:", str(error))
+
+        messages.error(
+            request,
+            "The cover letter could not be generated. Please try again."
+        )
+
+        return redirect("job_detail", id=job.id)

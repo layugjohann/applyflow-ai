@@ -13,5 +13,6 @@ urlpatterns = [
     path('ai/match-resume/', views.match_resume, name='match_resume'),
     path("resume/", views.resume_manager, name="resume_manager"),
     path("<int:job_id>/ai/", views.job_ai_analysis, name="job_ai_analysis"),
+    path("<int:job_id>/cover-letter/", views.generate_cover_letter, name="generate_cover_letter",),
 
 ]

@@ -97,22 +97,36 @@
     <!-- ACTIONS -->
     <div class="mt-4 d-flex flex-wrap gap-2">
 
-    <a href="{% url 'job_list' %}" class="btn btn-outline-light">
-        <i class="bi bi-arrow-left me-2"></i>
-        Back to Jobs
-    </a>
+        <a href="{% url 'job_list' %}" class="btn btn-outline-light">
+            <i class="bi bi-arrow-left me-2"></i>
+            Back to Jobs
+        </a>
 
-    <a href="{% url 'edit_job' job.id %}" class="btn btn-success">
-        <i class="bi bi-pencil-square me-2"></i>
-        Edit Job
-    </a>
+        <a href="{% url 'edit_job' job.id %}" class="btn btn-primary">
+            <i class="bi bi-pencil-square me-2"></i>
+            Edit Job
+        </a>
 
-    <a href="{% url 'delete_job' job.id %}" class="btn btn-outline-danger">
-        <i class="bi bi-trash me-2"></i>
-        Delete
-    </a>
+        <form
+            method="POST"
+            action="{% url 'generate_cover_letter' job.id %}"
+            class="d-inline">
 
-</div>
+            {% csrf_token %}
+
+            <button type="submit" class="btn btn-info">
+                <i class="bi bi-file-earmark-text me-2"></i>
+                Generate Cover Letter
+            </button>
+
+        </form>
+
+        <a href="{% url 'delete_job' job.id %}" class="btn btn-outline-danger">
+            <i class="bi bi-trash me-2"></i>
+            Delete
+        </a>
+
+    </div>
 
 <!-- ================= AI MATCH RESULT ================= -->
 <!-- ================= AI MATCH RESULT ================= -->
