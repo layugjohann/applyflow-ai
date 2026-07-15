@@ -97,11 +97,16 @@ if not DATABASE_URL:
         "DATABASE_URL is missing. Please configure your Supabase connection."
     )
 
+DB_SSL_REQUIRE = os.getenv(
+    "DB_SSL_REQUIRE",
+    "True"
+).lower() == "true"
+
 DATABASES = {
     "default": dj_database_url.parse(
         DATABASE_URL,
         conn_max_age=600,
-        ssl_require=True,
+        ssl_require=DB_SSL_REQUIRE,
     )
 }
 
